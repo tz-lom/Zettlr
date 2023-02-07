@@ -21,7 +21,8 @@ const tests = [
     input: Date.parse('09 Feb 2022 10:59:23'),
     relative: false,
     locale: 'en-US',
-    expected: 'February 9, 2022 at 10:59 AM'
+    // NOTE: Character is 8239 (Narrow no-break space)
+    expected: 'February 9, 2022 at 10:59 AM'
   },
   {
     input: Date.parse('09 Feb 2022 10:59:23'),
@@ -33,7 +34,8 @@ const tests = [
     input: Date.parse('01 Jan 1970 00:00:00'),
     relative: false,
     locale: 'en-US',
-    expected: 'January 1, 1970 at 12:00 AM'
+    // NOTE: Character is 8239 (Narrow no-break space)
+    expected: 'January 1, 1970 at 12:00 AM'
   },
   // Now, some relative tests.
   // NOTE: We cannot currently test for "just now" (< 1 min) since that depends

@@ -1638,7 +1638,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^10.0.0":
+"@types/mocha@npm:^10.0.1":
   version: 10.0.1
   resolution: "@types/mocha@npm:10.0.1"
   checksum: 224ea9fce7b1734ccdb9aa99a622d902a538ce1847bca7fd22c5fb38adcf3ed536f50f48f587085db988a4bb3c2eb68f4b98e1cd6a38bc5547bd3bbbedc54495
@@ -1652,7 +1652,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^18.11.9":
+"@types/node@npm:*":
   version: 18.11.18
   resolution: "@types/node@npm:18.11.18"
   checksum: 03f17f9480f8d775c8a72da5ea7e9383db5f6d85aa5fefde90dd953a1449bd5e4ffde376f139da4f3744b4c83942166d2a7603969a6f8ea826edfb16e6e3b49d
@@ -1663,6 +1663,13 @@ __metadata:
   version: 16.18.3
   resolution: "@types/node@npm:16.18.3"
   checksum: 6b8ba2ea5d842f7986e366cb9184c54d273d492784dc62e08fd5afeae938d9b61aec6e4222d2541cd18f9b1412ba361bbcb3f4204fb003608af80a2a6af959f9
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^18.11.19":
+  version: 18.11.19
+  resolution: "@types/node@npm:18.11.19"
+  checksum: d7cd19fcfc59cbdd3f9ba0b4072cb7adc21bd575bd8eb7d7e698975e63564aaa83f03434f32b12331f84f73d0b369d9cbe2371e359d9d7f5c3361f4987f4f7da
   languageName: node
   linkType: hard
 
@@ -9279,7 +9286,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mocha@npm:^10.0.0":
+"mocha@npm:^10.2.0":
   version: 10.2.0
   resolution: "mocha@npm:10.2.0"
   dependencies:
@@ -12453,7 +12460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.6.0":
+"ts-node@npm:^10.9.1":
   version: 10.9.1
   resolution: "ts-node@npm:10.9.1"
   dependencies:
@@ -13758,8 +13765,8 @@ __metadata:
     "@types/luxon": ^3.0.2
     "@types/md5": ^2.3.2
     "@types/mermaid": ^9.1.0
-    "@types/mocha": ^10.0.0
-    "@types/node": ^18.11.9
+    "@types/mocha": ^10.0.1
+    "@types/node": ^18.11.19
     "@types/rimraf": ^3.0.2
     "@types/sanitize-html": ^2.6.2
     "@types/semver": ^7.3.13
@@ -13807,7 +13814,7 @@ __metadata:
     mdast-util-to-hast: ^12.2.6
     mermaid: ^9.0.0
     minimatch: ^5.0.0
-    mocha: ^10.0.0
+    mocha: ^10.2.0
     moment: ^2.29.2
     node-loader: ^2.0.0
     nodehun: ^3.0.2
@@ -13832,7 +13839,7 @@ __metadata:
     style-loader: ^3.3.1
     tippy.js: ^6.3.7
     ts-loader: ^9.2.6
-    ts-node: ^10.6.0
+    ts-node: ^10.9.1
     tsconfig-paths: ^4.0.0
     typescript: 4.9.x
     unified: ^10.1.2
