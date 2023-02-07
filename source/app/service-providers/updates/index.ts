@@ -23,7 +23,7 @@ import path from 'path'
 import crypto from 'crypto'
 import got, { Response } from 'got'
 import semver from 'semver'
-import { getConverter } from '@common/util/md-to-html'
+import { md2html } from '@common/util/markdown-transpile'
 
 import { ipcMain, app, shell } from 'electron'
 import { trans } from '@common/i18n-main'
@@ -205,14 +205,12 @@ export default class UpdateProvider extends ProviderContract {
       return
     }
 
-    const md2html = getConverter()
-
     // First we need to parse the JSON data.
     const parsedResponse: ServerAPIResponse = JSON.parse(response.body)
 
     this._updateState.tagName = parsedResponse.tag_name
     this._updateState.updateAvailable = semver.lt(CUR_VER, parsedResponse.tag_name)
-    this._updateState.changelog = md2html(parsedResponse.body)
+    this._updateState.changelog = await md2html(parsedResponse.body)
     this._updateState.prerelease = parsedResponse.prerelease
     this._updateState.releasePage = parsedResponse.html_url
 
