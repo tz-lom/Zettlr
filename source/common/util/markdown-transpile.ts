@@ -20,11 +20,43 @@ function mdProcessor (): Processor<MdastRoot, MdastRoot, MdastRoot, string> {
   return remark()
     .use(remarkFrontmatter, [
       // Either Pandoc-style frontmatters ...
-      { type: 'yaml', fence: { open: '---', close: '...' } },
+      // { type: 'yaml', fence: { open: '---', close: '...' } },
       // ... or Jekyll/Static site generators-style frontmatters.
       { type: 'yaml', fence: { open: '---', close: '---' } }
     ])
     .use(remarkMath)
+}
+
+/**
+ * This is a DEBUG function used until issue #5 at micromark-extension-frontmatter is fixed
+ *
+ * @param   {string}  md  The original Markdown
+ *
+ * @return  {string}      The new Markdown with Pandoc frontmatters normalized to Jekyll-style
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function __DEBUG__normalizeFrontmatter (md: string): string {
+  const eol = md.includes('\r\n')
+    ? '\r\n'
+    : md.includes('\n\r') ? '\n\r' : '\n'
+
+  if (!md.startsWith(`---${eol}`)) {
+    return md // No frontmatter, nothing to do
+  }
+
+  const lines = md.split(eol)
+
+  for (let i = 1; i < lines.length; i++) {
+    if (lines[i] === '---') {
+      return md // We first found a correct frontmatter, so nothing to do
+    } else if (lines[i] === '...') {
+      // Pandoc style ending, so exchange and return normalized frontmatter
+      lines[i] = '---'
+      return lines.join(eol)
+    }
+  }
+
+  return md
 }
 
 /**
@@ -39,15 +71,16 @@ function htmlProcessor (): Processor<HastRoot, HastRoot, HastRoot, string> {
 /**
  * Turns Markdown to HTML
  *
- * @param   {string}           md  The Markdown source
+ * @param   {string}           md       The Markdown source
+ * @param   {string}           library  Optional CSL library to resolve citations
  *
- * @return  {Promise<string>}      Resolves with the HTML code
+ * @return  {Promise<string>}           Resolves with the HTML code
  */
-export async function md2html (md: string): Promise<string> {
+export async function md2html (md: string, library?: string): Promise<string> {
   const file = await mdProcessor()
     .use(remarkRehype)
     .use(rehypeStringify)
-    .process(md)
+    .process(__DEBUG__normalizeFrontmatter(md))
   return String(file)
 }
 
@@ -74,7 +107,7 @@ export async function html2md (html: string): Promise<string> {
 * @return  {Text[]}            A set of text nodes (including their positions)
 */
 export function extractTextnodes (input: string|Parent): Text[] {
-  const ast = (typeof input === 'string') ? mdProcessor().parse(input) : input
+  const ast = (typeof input === 'string') ? mdProcessor().parse(__DEBUG__normalizeFrontmatter(input)) : input
   const textNodes: Text[] = []
   // NOTE: We're dealing with an mdast, not the CodeMirror Markdown mode one!
   const ignoreBlocks = [ 'code', 'math' ]
