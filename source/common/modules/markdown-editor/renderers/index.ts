@@ -24,12 +24,13 @@ import { renderMermaid } from './render-mermaid'
 import { renderTables } from './render-tables'
 import { renderIframes } from './render-iframes'
 import { renderEmphasis } from './render-emphasis'
+import { renderPlantUML } from './render-plantuml'
 import { configField, type EditorConfiguration } from '../util/configuration'
 
 const renderCompartment = new Compartment()
 
 const transactionExtender = EditorState.transactionExtender.from(configField, config => transaction => {
-  const ext: Extension[] = [renderMermaid]
+  const ext: Extension[] = [renderMermaid, renderPlantUML]
   if (config.renderImages) ext.push(renderImages)
   if (config.renderLinks) ext.push(renderLinks)
   if (config.renderMath) ext.push(renderMath)
