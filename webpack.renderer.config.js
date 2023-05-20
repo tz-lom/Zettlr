@@ -3,6 +3,7 @@ const path = require('path')
 
 const { VueLoaderPlugin } = require('vue-loader')
 const { DefinePlugin } = require('webpack')
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const plugins = [
   // Apply webpack rules to the corresponding language blocks in .vue files
@@ -12,6 +13,11 @@ const plugins = [
   new DefinePlugin({
     __VUE_OPTIONS_API__: true,
     __VUE_PROD_DEVTOOLS__: false
+  }),
+  new CopyWebpackPlugin({
+    patterns: [
+      { from: 'static/plantuml', to: 'plantuml' }
+    ]
   })
 ]
 

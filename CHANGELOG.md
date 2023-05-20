@@ -306,6 +306,7 @@ there.
   depending on the app's display
 - In various parts of the app, URLs will now be displayed in a shortened format
   if they are long and the space is limited
+- **New Feature** Add PlantUML support in code blocks
 
 ## Under the Hood
 
