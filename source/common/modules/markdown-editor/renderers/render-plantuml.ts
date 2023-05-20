@@ -15,30 +15,30 @@
 import { renderBlockWidgets } from './base-renderer'
 import { type SyntaxNode, type SyntaxNodeRef } from '@lezer/common'
 import { WidgetType, type EditorView } from '@codemirror/view'
-
-// import plantuml from '@sakirtemel/plantuml.js'
 import { type EditorState } from '@codemirror/state'
 import clickAndSelect from './click-and-select'
 
-// Initialize PlantUML
-// plantuml.initialize()
-
-function initialize (): void {
-  let cheerpj = document.createElement('script')
-  cheerpj.src = '/plantuml/cjrtnc.leaningtech.com/2.3/loader.js'
-  cheerpj.type = 'text/javascript'
-  cheerpj.onload = function (): void {
-    cheerpjInit()
-    cheerpjRunMain('com.plantuml.wasm.v1.RunInit', '/app/plantuml/plantuml.github.io/plantuml.js/plantuml-wasm/plantuml-core.jar', '/app/plantuml/plantuml.github.io/plantuml.js/plantuml-wasm')
-  }
-  document.body.append(cheerpj)
+async function initialize (): Promise<void> {
+  return await new Promise<void>((resolve, reject) => {
+    let cheerpj = document.createElement('script')
+    cheerpj.src = '/plantuml/cjrtnc.leaningtech.com/2.3/loader.js'
+    cheerpj.type = 'text/javascript'
+    cheerpj.onload = function (): void {
+      cheerpjInit()
+      cheerpjRunMain('com.plantuml.wasm.v1.RunInit', '/app/plantuml/plantuml.github.io/plantuml.js/plantuml-wasm/plantuml-core.jar', '/app/plantuml/plantuml.github.io/plantuml.js/plantuml-wasm')
+        .then(resolve)
+        .catch(reject)
+    }
+    document.body.append(cheerpj)
+  })
 }
 
-const renderPng = async (pumlContent: any): Promise<Blob> => {
+const plantuml = initialize()
+const renderPng = async (umlContent: any): Promise<Blob> => {
   return await new Promise((resolve, reject) => {
     const renderingStartedAt = new Date()
     const resultFileSuffix = renderingStartedAt.getTime().toString()
-    cjCall('com.plantuml.wasm.v1.Png', 'convert', 'light', `/files/result-${resultFileSuffix}.png`, pumlContent).then((result: any) => {
+    cjCall('com.plantuml.wasm.v1.Png', 'convert', 'light', `/files/result-${resultFileSuffix}.png`, umlContent).then((result: any) => {
       const obj = JSON.parse(result)
       if (obj.status === 'ok') {
         cjFileBlob(`result-${resultFileSuffix}.png`).then((blob: Blob) => {
@@ -49,15 +49,13 @@ const renderPng = async (pumlContent: any): Promise<Blob> => {
             // console.log('Rendering finished in', (new Date()).getTime() - renderingStartedAt.getTime(), 'ms')
             resolve(blob)
           }
-        })
+        }).catch(reject)
       } else {
         reject(Error('Failed to render PlanUML'))
       }
-    })
+    }).catch(reject)
   })
 }
-
-initialize()
 
 class PlantUMLWidget extends WidgetType {
   constructor (readonly graph: string, readonly node: SyntaxNode) {
@@ -77,15 +75,21 @@ class PlantUMLWidget extends WidgetType {
     const msg = document.createElement('span')
     elem.append(msg)
     elem.append(img)
-    msg.innerText = 'Rendering PlantUML'
+    msg.innerText = 'Loading PlantUML engine'
 
-    renderPng(this.graph).then((blob: any) => {
-      img.src = window.URL.createObjectURL(blob)
-      msg.innerText = ''
-    }).catch((err: any) => {
+    let failed = (err: any): void => {
       elem.classList.add('error')
       msg.innerText = `Could not render Graph:\n\n${err.str as string}`
-    })
+    }
+
+    plantuml.then(() => {
+      msg.innerText = 'Rendering PlantUML'
+      renderPng(this.graph).then((blob: any) => {
+        img.src = window.URL.createObjectURL(blob)
+        msg.innerText = ''
+      }).catch(failed)
+    }).catch(failed)
+
     elem.addEventListener('click', clickAndSelect(view))
     return elem
   }
@@ -136,6 +140,6 @@ export const renderPlantUML = renderBlockWidgets(shouldHandleNode, createWidget)
 
 declare function cjFileBlob (hello: string): Promise<Blob>
 declare function cheerpjInit (): void
-declare function cheerpjRunMain (arg0: string, arg1: string, arg2: string): void
+declare function cheerpjRunMain (arg0: string, arg1: string, arg2: string): Promise<void>
 declare function cheerpjGetFSMountForPath (arg0: string): any
 declare function cjCall (arg0: string, arg1: string, arg2: string, arg3: string, pumlContent: any): Promise<any>
