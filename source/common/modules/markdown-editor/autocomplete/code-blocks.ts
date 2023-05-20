@@ -68,6 +68,7 @@ function getEntries (): Completion[] {
     { apply: generate('objectivec'), label: 'Objective-C' },
     { apply: generate('perl'), label: 'Perl' },
     { apply: generate('php'), label: 'PHP' },
+    { apply: generate('plantuml'), label: 'PlantUML' },
     { apply: generate('powershell'), label: 'Powershell' },
     { apply: generate('python'), label: 'Python' },
     { apply: generate('r'), label: 'R' },
